@@ -25,17 +25,12 @@ interface SalesChartProps {
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
 export default function SalesChart({ data, type }: SalesChartProps) {
-  // For pie chart, aggregate by year
+  // For pie chart, aggregate by month
   const pieData = data.length > 0 
-    ? data.reduce((acc, item) => {
-        const existing = acc.find(d => d.name === `${item.year}`);
-        if (existing) {
-          existing.value += item.sales;
-        } else {
-          acc.push({ name: `${item.year}`, value: item.sales });
-        }
-        return acc;
-      }, [] as Array<{ name: string; value: number }>)
+    ? data.map(item => ({
+        name: `${item.month}`,
+        value: item.sales
+      }))
     : [];
 
   if (type === "bar") {
