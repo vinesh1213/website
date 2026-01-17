@@ -19,26 +19,27 @@ import type { SalesRecord } from "./mockData";
 
 interface SalesChartProps {
   data: SalesRecord[];
-  type: "bar" | "line" | "pie";
+  chartType: "bar" | "line" | "pie";
 }
 
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
-export default function SalesChart({ data, type }: SalesChartProps) {
+export default function SalesChart({ data, chartType }: SalesChartProps) {
   // For pie chart, aggregate by year
-  const pieData = data.length > 0 
-    ? data.reduce((acc, item) => {
-        const existing = acc.find(d => d.name === `${item.year}`);
-        if (existing) {
-          existing.value += item.sales;
-        } else {
-          acc.push({ name: `${item.year}`, value: item.sales });
-        }
-        return acc;
-      }, [] as Array<{ name: string; value: number }>)
-    : [];
+  const pieData =
+    data.length > 0
+      ? data.reduce((acc, item) => {
+          const existing = acc.find((d) => d.name === `${item.year}`);
+          if (existing) {
+            existing.value += item.sales;
+          } else {
+            acc.push({ name: `${item.year}`, value: item.sales });
+          }
+          return acc;
+        }, [] as Array<{ name: string; value: number }>)
+      : [];
 
-  if (type === "bar") {
+  if (chartType === "bar") {
     return (
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
@@ -54,7 +55,7 @@ export default function SalesChart({ data, type }: SalesChartProps) {
     );
   }
 
-  if (type === "line") {
+  if (chartType === "line") {
     return (
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
@@ -63,20 +64,8 @@ export default function SalesChart({ data, type }: SalesChartProps) {
           <YAxis />
           <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
           <Legend />
-          <Line
-            type="monotone"
-            dataKey="sales"
-            stroke="#3b82f6"
-            strokeWidth={2}
-            name="Sales ($)"
-          />
-          <Line
-            type="monotone"
-            dataKey="units"
-            stroke="#10b981"
-            strokeWidth={2}
-            name="Units Sold"
-          />
+          <Line type="monotone" dataKey="sales" stroke="#3b82f6" strokeWidth={2} name="Sales ($)" />
+          <Line type="monotone" dataKey="units" stroke="#10b981" strokeWidth={2} name="Units Sold" />
         </LineChart>
       </ResponsiveContainer>
     );
